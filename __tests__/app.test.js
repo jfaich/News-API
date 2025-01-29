@@ -137,3 +137,58 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments from the correct article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        const body = response.body;
+        expect(body.length).toBe(11);
+      });
+  });
+  test("should be sorted by created_at date in descending order ", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .then((response) => {
+        const body = response.body;
+
+        expect(body).toBeSorted({ descending: true, key: "created_at" });
+      });
+  });
+  test("each comment should have the correct properties and values", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        const body = response.body;
+        body.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("returns error message when article has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No comments found for article ID 4");
+      });
+  });
+  test("returns bad request when parametric endpoint is not the right type", () => {
+    return request(app)
+      .get("/api/articles/four/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
