@@ -5,6 +5,7 @@ const getTopics = require("./controllers/topics.controllers");
 const {
   getArticleById,
   getArticles,
+  getArticlesComments,
 } = require("./controllers/articles.controllers");
 
 app.get("/api", (request, response) => {
@@ -16,6 +17,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getArticlesComments);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {
