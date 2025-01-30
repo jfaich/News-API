@@ -192,3 +192,47 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("should respond with a posted comment", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "rogersop",
+        body: "This is the best article I've read for a while!",
+      })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment.username).toBe("rogersop");
+        expect(response.body.comment.body).toBe(
+          "This is the best article I've read for a while!"
+        );
+      });
+  });
+
+  test("should respond with a bad request when passed no body value", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "rogersop",
+        body: "",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Comment value not found");
+      });
+  });
+
+  test("should respond with a not found when the article doesn't exist", () => {
+    return request(app)
+      .post("/api/articles/10000/comments")
+      .send({
+        username: "rogersop",
+        body: "This is the best article I've read for a while!",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("article not found");
+      });
+  });
+});
