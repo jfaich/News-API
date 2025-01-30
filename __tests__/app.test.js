@@ -236,3 +236,90 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("should respond with a posted comment", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "rogersop",
+        body: "This is the best article I've read for a while!",
+      })
+      .expect(201)
+      .then((response) => {
+        expect(response.body.comment.username).toBe("rogersop");
+        expect(response.body.comment.body).toBe(
+          "This is the best article I've read for a while!"
+        );
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id/", () => {
+  test("should update article votes property when votes increase", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: 100,
+      })
+      .expect(201)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article.votes).toBe(200);
+      })
+      .then(() => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({
+            inc_votes: 150,
+          })
+          .then((secondResponse) => {
+            expect(secondResponse.body.article.votes).toBe(350);
+          });
+      });
+  });
+  test("should update article votes property when votes decreases", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: -10,
+      })
+      .expect(201)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article.votes).toBe(90);
+      });
+  });
+  test("should respond with an article with the correct properties", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: -10,
+      })
+      .expect(201)
+      .then((response) => {
+        const article = response.body.article;
+        expect(article).toMatchObject({
+          article_id: 1,
+          author: "butter_bridge",
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: 90,
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("should respond with bad request when votes count is not a number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: "FOUR",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("incorrect input type for votes");
+      });
+  });
+});

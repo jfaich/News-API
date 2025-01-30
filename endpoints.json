@@ -41,5 +41,35 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to a specified article",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "username": "rogersop",
+          "body": "This is the best article I've read for a while!"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "adds of decreases the vote count of a specified article",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "author": "butter_bridge",
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "body": "I find this existence challenging",
+          "created_at": "2020-01-01T03:08:00.000Z",
+          "votes": 90,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
   }
 }

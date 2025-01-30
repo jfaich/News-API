@@ -60,9 +60,20 @@ const addComment = (newComment, article_id) => {
     });
 };
 
+const makePatch = (inc_votes, article_id) => {
+  return db
+    .query(
+      `UPDATE articles SET votes = votes + ${inc_votes} WHERE articles.article_id = ${article_id} RETURNING *`
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+
 module.exports = {
   fetchArticleByArticleId,
   fetchArticles,
   fetchArticlesComments,
   addComment,
+  makePatch,
 };
