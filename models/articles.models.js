@@ -43,8 +43,26 @@ const fetchArticlesComments = (article_id) => {
     });
 };
 
+const addComment = (newComment, article_id) => {
+  if (newComment.body.length === 0) {
+    return Promise.reject({
+      status: 400,
+      msg: "Comment value not found",
+    });
+  }
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *`,
+      [newComment.username, newComment.body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
+
 module.exports = {
   fetchArticleByArticleId,
   fetchArticles,
   fetchArticlesComments,
+  addComment,
 };
