@@ -15,11 +15,25 @@ const fetchArticleByArticleId = (article_id) => {
     });
 };
 
-const fetchArticles = () => {
+const fetchArticles = (queries) => {
+  const sort_by = queries.sort_by;
+  const order = queries.order;
   const propertiesToFetch =
     "articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url";
 
-  let SQLString = `SELECT ${propertiesToFetch}, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC`;
+  let SQLString = `SELECT ${propertiesToFetch}, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id`;
+
+  if (sort_by) {
+    SQLString += ` ORDER BY ${sort_by}`;
+  } else {
+    SQLString += " ORDER BY created_at";
+  }
+
+  if (order) {
+    SQLString += " " + order;
+  } else {
+    SQLString += " desc";
+  }
 
   return db.query(SQLString).then((result) => {
     return result.rows;

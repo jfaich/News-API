@@ -364,3 +364,24 @@ describe("GET /api/users", () => {
     return request(app).get("/api/userss").expect(404);
   });
 });
+
+describe("GET /api/articles (sorting queries)", () => {
+  test("responds with an array of articles sorted by author name in ascending order", () => {
+    return request(app)
+      .get("/api/articles?&sort_by=author&order=asc")
+      .expect(200)
+      .then((response) => {
+        const body = response.body;
+        expect(body).toBeSorted({ descending: false, key: "author" });
+      });
+  });
+  test("refault to descending order when provided a sort by query but no order by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then((response) => {
+        const body = response.body;
+        expect(body).toBeSorted({ descending: true, key: "author" });
+      });
+  });
+});

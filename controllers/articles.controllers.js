@@ -19,7 +19,8 @@ const getArticleById = (request, response, next) => {
 };
 
 const getArticles = (request, response, next) => {
-  fetchArticles()
+  const queries = request.query;
+  fetchArticles(queries)
     .then((articles) => {
       response.status(200).send(articles);
     })
