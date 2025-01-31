@@ -9,6 +9,7 @@ const {
   postComment,
   patchArticle,
 } = require("./controllers/articles.controllers");
+const deleteComment = require("./controllers/comments.controllers");
 
 app.use(express.json());
 
@@ -27,6 +28,8 @@ app.get("/api/articles/:article_id/comments", getArticlesComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((error, request, response, next) => {
   if (error.status && error.msg) {

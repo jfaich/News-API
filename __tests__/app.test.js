@@ -323,3 +323,22 @@ describe("PATCH /api/articles/:article_id/", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/comment_id", () => {
+  test("returns a 204 status and no content", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("returns a 400 status with a bad request status and no content", () => {
+    return request(app).delete("/api/comments/four").expect(400);
+  });
+  test("returns a 404 status when the requested comment is not found", () => {
+    return request(app)
+      .delete("/api/comments/100000")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(
+          "No comment found for comment ID 100000"
+        );
+      });
+  });
+});
