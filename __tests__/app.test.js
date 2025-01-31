@@ -375,7 +375,7 @@ describe("GET /api/articles (sorting queries)", () => {
         expect(body).toBeSorted({ descending: false, key: "author" });
       });
   });
-  test("refault to descending order when provided a sort by query but no order by query", () => {
+  test("defaults to descending order when provided a sort_by query but no order_by query", () => {
     return request(app)
       .get("/api/articles?sort_by=author")
       .expect(200)
